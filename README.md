@@ -86,8 +86,8 @@ npx http-server
 *Elegant desktop interface with animated gradients and trending movie posters*
 
 ### Mobile Experience
-<div align="center">
 ![MobileMovieFinder](https://github.com/user-attachments/assets/7f5f2ee0-fe8c-4c48-8cc8-2bdb64a425a1)
+<div align="center">
 </div>
 
 *Seamlessly optimized mobile experience with responsive design and smooth animations*
