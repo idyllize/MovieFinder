@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Search Engine</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .header {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+    }
+    .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    .search-section {
+        padding: 30px;
+    }
+    .search-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .search-input {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #e1e8ed;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+    .search-btn {
+        padding: 15px 30px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .search-btn:hover {
+        transform: translateY(-2px);
+    }
+    .tmdb-search-btn {
+        padding: 15px 30px;
+        background: linear-gradient(45deg, #01b4e4, #90cea1);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .loading {
+        text-align: center;
+        padding: 20px;
+        display: none;
+    }
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .results {
+        margin-top: 20px;
+    }
+    .site-results {
+        margin-bottom: 30px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .site-header {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 20px;
+        font-weight: bold;
+        font-size: 1.2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .movie-item {
+        padding: 20px;
+        border-bottom: 1px solid #f1f3f4;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 20px;
+        align-items: center;
+        background: white;
+    }
+    .movie-item:hover {
+        background: #f8f9fa;
+    }
+    .movie-poster {
+        width: 60px;
+        height: 90px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #e9ecef;
+    }
+    .movie-info {
+        flex: 1;
+    }
+    .movie-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    .movie-overview {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .movie-meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .meta-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+    .year-badge { background: #6c757d; color: white; }
+    .type-badge { background: #17a2b8; color: white; }
+    .rating-badge { background: #ffc107; color: #000; }
+    .id-badge { background: #28a745; color: white; }
+    .watch-btn {
+        background: #667eea;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .watch-btn:hover {
+        background: #5a6fd8;
+    }
+    .debug-section {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+        display: none;
+    }
+    .debug-content {
+        max-height: 300px;
+        overflow-y: auto;
+        background: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+    }
+    .debug-btn {
+        padding: 8px 16px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 12px;
+        margin: 10px 0;
+    }
+    .error-message {
+        background: #ffe6e6;
+        border: 1px solid #ffcccc;
+        color: #cc0000;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+    .success-message {
+        background: #e6ffe6;
+        border: 1px solid #ccffcc;
+        color: #006600;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+    .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        display: none;
+    }
+    .site-links {
+        margin-top: 30px;
+        padding: 25px;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+    .site-link {
+        display: inline-block;
+        margin: 10px;
+        padding: 12px 24px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+    }
+    .site-link:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+    }
+    .manual-search {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .popular-movies {
+        background: #e8f5e8;
+        border: 1px solid #c3e6c3;
+        color: #155724;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .movie-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .movie-link {
+        background: #28a745;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    .movie-link:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+    .tips {
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        color: #0d47a1;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .search-method {
+        background: #f0f8ff;
+        border: 1px solid #b3d9ff;
+        color: #0066cc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🎬 Movie Search Engine</h1>
+        <p>Your gateway to streaming movies and TV shows</p>
+    </div>
+    
+    <div class="search-section">
+        <div class="search-method">
+            <h4>🔍 Working Search Method</h4>
+            <p>Using TMDB API to find movies, then generating FlixBaba links with proper IDs and slugs!</p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Enter movie or TV show name..." id="movieInput" value="Top Gun">
+            <button class="tmdb-search-btn" onclick="searchMoviesWithTMDB()">🎬 Search Movies</button>
+        </div>
+
+        <div class="manual-search">
+            <h4>🔍 Manual Search (Backup)</h4>
+            <p>Direct search on streaming sites:</p>
+            <div class="movie-links">
+                <a href="https://flixbaba.net/search?q=" target="_blank" class="movie-link" onclick="openSearch('flixbaba')">
+                    Search FlixBaba
+                </a>
+                <a href="https://2flix.to/search/" target="_blank" class="movie-link" onclick="openSearch('2flix')">
+                    Search 2Flix
+                </a>
+                <a href="https://fmovies.to/search/" target="_blank" class="movie-link">
+                    Search FMovies
+                </a>
+                <a href="https://soap2day.ac/search/" target="_blank" class="movie-link">
+                    Search Soap2Day
+                </a>
+            </div>
+        </div>
+
+        <div class="popular-movies">
+            <h4>🎬 Popular Movies - Direct Links</h4>
+            <p>Click to watch popular movies directly:</p>
+            <div class="movie-links">
+                <a href="https://flixbaba.net/movie/361743/top-gun-maverick" target="_blank" class="movie-link">
+                    Top Gun: Maverick
+                </a>
+                <a href="https://flixbaba.net/movie/76341/mad-max-fury-road" target="_blank" class="movie-link">
+                    Mad Max: Fury Road
+                </a>
+                <a href="https://flixbaba.net/movie/298618/the-flash" target="_blank" class="movie-link">
+                    The Flash
+                </a>
+                <a href="https://flixbaba.net/movie/447365/guardians-of-the-galaxy-volume-3" target="_blank" class="movie-link">
+                    Guardians Galaxy 3
+                </a>
+                <a href="https://flixbaba.net/movie/238/the-godfather" target="_blank" class="movie-link">
+                    The Godfather
+                </a>
+                <a href="https://flixbaba.net/movie/155/the-dark-knight" target="_blank" class="movie-link">
+                    The Dark Knight
+                </a>
+                <a href="https://flixbaba.net/movie/13/forrest-gump" target="_blank" class="movie-link">
+                    Forrest Gump
+                </a>
+                <a href="https://flixbaba.net/movie/278/the-shawshank-redemption" target="_blank" class="movie-link">
+                    The Shawshank Redemption
+                </a>
+            </div>
+        </div>
+        
+        <button class="debug-btn" onclick="toggleDebug()">🔧 Show Debug</button>
+        
+        <div class="debug-section" id="debugSection">
+            <h4>Debug Information:</h4>
+            <div class="debug-content" id="debugContent"></div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Searching for movies...</p>
+        </div>
+        
+        <div class="results" id="results"></div>
+        
+        <div class="no-results" id="noResults">
+            <h3>No movies found</h3>
+            <p>Try a different search term or use the manual search links above</p>
+        </div>
+
+        <div class="site-links">
+            <h4>🌐 Streaming Websites:</h4>
+            <a href="https://flixbaba.net/" target="_blank" class="site-link">
+                🎭 FlixBaba
+            </a>
+            <a href="https://2flix.to/" target="_blank" class="site-link">
+                🎬 2Flix
+            </a>
+            <a href="https://fmovies.to/" target="_blank" class="site-link">
+                📺 FMovies
+            </a>
+            <a href="https://soap2day.ac/" target="_blank" class="site-link">
+                🎪 Soap2Day
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let debugMode = false;
+    let debugInfo = '';
+
+    // TMDB API configuration (using a demo key - replace with your own)
+    const TMDB_API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c'; // Demo key
+    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+    const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+    function createSlug(title) {
+        return title
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+
+    function createMovieUrl(id, title, baseUrl = 'https://flixbaba.net') {
+        const slug = createSlug(title);
+        return `${baseUrl}/movie/${id}/${slug}`;
+    }
+
+    function addDebug(message) {
+        debugInfo += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        if (debugMode) {
+            document.getElementById('debugContent').textContent = debugInfo;
+            document.getElementById('debugContent').scrollTop = document.getElementById('debugContent').scrollHeight;
+        }
+        console.log(message);
+    }
+
+    function toggleDebug() {
+        debugMode = !debugMode;
+        const debugSection = document.getElementById('debugSection');
+        debugSection.style.display = debugMode ? 'block' : 'none';
+        
+        if (debugMode) {
+            document.getElementById('debugContent').textContent = debugInfo;
+        }
+    }
+
+    function openSearch(site) {
+        const searchTerm = document.getElementById('movieInput').value.trim() || 'Top Gun';
+        let url;
+        
+        switch(site) {
+            case 'flixbaba':
+                url = `https://flixbaba.net/search?q=${encodeURIComponent(searchTerm)}`;
+                break;
+            case '2flix':
+                url = `https://2flix.to/search/${encodeURIComponent(searchTerm)}`;
+                break;
+            default:
+                return;
+        }
+        
+        window.open(url, '_blank');
+        addDebug(`🔗 Opened manual search for "${searchTerm}" on ${site}`);
+    }
+
+    async function searchMoviesWithTMDB() {
+        const searchTerm = document.getElementById('movieInput').value.trim();
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const noResults = document.getElementById('noResults');
+
+        if (!searchTerm) {
+            alert('Please enter a movie or TV show name');
+            return;
+        }
+
+        // Clear previous results
+        debugInfo = '';
+        results.innerHTML = '';
+        noResults.style.display = 'none';
+        loading.style.display = 'block';
+
+        addDebug(`🚀 Starting TMDB search for: "${searchTerm}"`);
+
+        try {
+            // Search TMDB for movies
+            const searchUrl = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTerm)}`;
+            addDebug(`🔍 TMDB URL: ${searchUrl}`);
+
+            const response = await fetch(searchUrl);
+            
+            if (!response.ok) {
+                throw new Error(`TMDB API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            addDebug(`✅ TMDB returned ${data.results.length} results`);
+
+            loading.style.display = 'none';
+
+            if (data.results && data.results.length > 0) {
+                // Convert TMDB results to FlixBaba format
+                const movies = data.results.slice(0, 10).map(movie => {
+                    const flixbabaUrl = createMovieUrl(movie.id, movie.title);
+                    addDebug(`📝 Converting: ${movie.title} (${movie.id}) -> ${flixbabaUrl}`);
+                    
+                    return {
+                        id: movie.id,
+                        title: movie.title,
+                        url: flixbabaUrl,
+                        type: 'Movie',
+                        year: movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A',
+                        rating: movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A',
+                        overview: movie.overview || 'No description available',
+                        poster: movie.poster_path ? `${TMDB_IMAGE_BASE}${movie.poster_path}` : null,
+                        source: 'FlixBaba (via TMDB)'
+                    };
+                });
+
+                displayResults(movies);
+                addDebug(`✅ Successfully converted ${movies.length} movies to FlixBaba links`);
+                
+                // Show success message
+                results.insertAdjacentHTML('afterbegin', `
+                    <div class="success-message">
+                        <strong>✅ Search Successful!</strong> Found ${movies.length} movies. 
+                        Each link uses the correct FlixBaba URL format with movie ID and slug.
+                    </div>
+                `);
+
+            } else {
+                noResults.style.display = 'block';
+                addDebug('❌ No movies found in TMDB');
+            }
+
+        } catch (error) {
+            loading.style.display = 'none';
+            noResults.style.display = 'block';
+            results.innerHTML = `
+                <div class="error-message">
+                    <strong>Search Failed:</strong> ${error.message}<br>
+                    <strong>Solution:</strong> Use the manual search buttons above.
+                </div>
+            `;
+            addDebug(`💥 TMDB search failed: ${error.message}`);
+        }
+    }
+
+    function displayResults(movies) {
+        const results = document.getElementById('results');
+        
+        const siteResultsDiv = document.createElement('div');
+        siteResultsDiv.className = 'site-results';
+        
+        const siteHeader = document.createElement('div');
+        siteHeader.className = 'site-header';
+        siteHeader.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span>🎬</span>
+                <span>FlixBaba Links (Generated from TMDB)</span>
+            </div>
+            <span>${movies.length} movies</span>
+        `;
+        
+        siteResultsDiv.appendChild(siteHeader);
+        
+        movies.forEach(movie => {
+            const movieDiv = document.createElement('div');
+            movieDiv.className = 'movie-item';
+            
+            movieDiv.innerHTML = `
+                <img src="${movie.poster || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA2MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRTlFQ0VGIi8+CjxwYXRoIGQ9Ik0yNSAzNUgzNVY0NUgyNVYzNVoiIGZpbGw9IiM2Qzc1N0QiLz4KPC9zdmc+'}" 
+                     alt="${movie.title}" class="movie-poster" 
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA2MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRTlFQ0VGIi8+CjxwYXRoIGQ9Ik0yNSAzNUgzNVY0NUgyNVYzNVoiIGZpbGw9IiM2Qzc1N0QiLz4KPC9zdmc+'">
+                <div class="movie-info">
+                    <div class="movie-title">${movie.title}</div>
+                    <div class="movie-overview">${movie.overview}</div>
+                    <div class="movie-meta">
+                        <span class="meta-badge type-badge">${movie.type}</span>
+                        <span class="meta-badge year-badge">${movie.year}</span>
+                        <span class="meta-badge rating-badge">⭐ ${movie.rating}</span>
+                        <span class="meta-badge id-badge">ID: ${movie.id}</span>
+                    </div>
+                    <div style="font-size: 0.75em; color: #888; margin-top: 8px; word-break: break-all;">
+                        🔗 ${movie.url}
+                    </div>
+                </div>
+                <a href="${movie.url}" target="_blank" class="watch-btn">Watch on FlixBaba</a>
+            `;
+            
+            siteResultsDiv.appendChild(movieDiv);
+        });
+        
+        results.appendChild(siteResultsDiv);
+    }
+
+    // Allow Enter key to search
+    document.getElementById('movieInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchMoviesWithTMDB();
+        }
+    });
+
+    // Initial message
+    addDebug('🎬 Movie Search Engine loaded');
+    addDebug('🔧 Using TMDB API to generate FlixBaba links');
+    addDebug('💡 Search will find movies and create proper FlixBaba URLs');
+</script>
+</body>
+</html>
