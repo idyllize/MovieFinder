@@ -1,8 +1,8 @@
 # 🎬 MovieFinder
 
-**A stunning, modern movie discovery platform with instant streaming access**
+**Discover movies and TV shows with a stunning, modern platform for instant streaming**
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-6366f1?style=for-the-badge&logo=vercel)](https://idyllize.github.io/MovieFinder/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-6366f1?style=for-the-badge&logo=vercel)](https://idyllize.github.io/MovieFinder/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/idyllize/MovieFinder)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -10,104 +10,105 @@
 
 ## ✨ Features
 
-### 🔍 **Smart Movie Search**
+### 🔍 **Intelligent Search**
 - Real-time search powered by The Movie Database (TMDB) API
-- Comprehensive results for both movies and TV shows
-- Detailed movie information including ratings, release dates, and descriptions
+- Comprehensive results for movies and TV shows
+- Rich details including ratings, release years, overviews, and posters
 
-### 🔥 **Live Trending Movies**
-- Weekly trending movies with beautiful poster displays
-- Auto-refresh functionality for latest trends
-- Direct streaming links to popular platforms
+### 🔥 **Trending Movies**
+- Dynamic weekly trending movies with vibrant poster displays
+- Auto-refresh for the latest trends via TMDB
+- Direct streaming links to top platforms
 
-### 🎨 **Stunning Visual Design**
-- Mesmerizing animated gradient backgrounds that shift through cosmic colors
-- Glassmorphism effects with backdrop blur and aurora animations
-- Premium purple/violet color scheme with perfect color harmony
-- Fully responsive mobile-first design that adapts beautifully
+### 🎨 **Exquisite Design**
+- Animated gradient backgrounds in cosmic purple and violet
+- Glassmorphism with frosted glass effects and aurora animations
+- Mobile-first, fully responsive design for all devices
+- Premium typography and color harmony for a delightful experience
 
-### 🚀 **Instant Streaming Access**
-- One-click access to multiple streaming platforms
-- Direct links to FlixBaba, 2Flix, FMovies, and Soap2Day
-- No registration or sign-up required
+### 🚀 **Seamless Streaming**
+- One-click access to platforms like FlixBaba, 2Flix, FMovies, and Soap2Day
+- No registration required for instant access
+- Global streaming support for diverse audiences
 
 ---
 
 ## 🌐 Live Demo
 
-**[Visit MovieFinder](https://idyllize.github.io/MovieFinder/)**
+**[Explore MovieFinder Now](https://idyllize.github.io/MovieFinder/)**
 
-Experience the magic of movie discovery with our live platform!
+Immerse yourself in a captivating movie discovery experience!
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Technology | Purpose |
-|------------|---------|
-| **HTML5** | Semantic structure and accessibility |
-| **CSS3** | Advanced animations, gradients, and responsive design |
+| Technology       | Purpose                              |
+|------------------|--------------------------------------|
+| **HTML5**        | Semantic structure and accessibility |
+| **CSS3**         | Advanced animations and responsive design |
 | **Vanilla JavaScript** | Dynamic functionality and API integration |
-| **TMDB API** | Movie data and poster images |
-| **GitHub Pages** | Fast, reliable hosting |
+| **TMDB API**     | Real-time movie data and posters     |
+| **GitHub Pages** | Reliable, fast hosting               |
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: Use the Live Version
-Simply visit [https://idyllize.github.io/MovieFinder/](https://idyllize.github.io/MovieFinder/) and start discovering movies!
+### Option 1: Live Version
+Visit [https://idyllize.github.io/MovieFinder/](https://idyllize.github.io/MovieFinder/) to dive into movie discovery instantly.
 
-### Option 2: Local Development
+### Option 2: Local Setup
 
 ```bash
 # Clone the repository
 git clone https://github.com/idyllize/MovieFinder.git
 
-# Navigate to project directory
+# Navigate to the project directory
 cd MovieFinder
 
-# Open in your preferred web server
+# Serve with a local web server
 # For Python 3:
 python -m http.server 8000
 
 # For Node.js (with http-server):
 npx http-server
 
-# Or simply open index.html in your browser
+# Or open index.html directly in your browser
 ```
 
 ---
 
-## 📱 Screenshots & Demo
+## 📷 Screenshots & Demo
 
-### 🖥️ Desktop Experience
-[![Desktop View](https://imgur.com/a/desktop-view-6XcRqsM)](https://imgur.com/a/desktop-view-6XcRqsM)
+### Desktop Experience
+![Desktop Interface](https://i.imgur.com/4Qqqek6.png)
+*Elegant desktop interface with animated gradients and trending movie posters*
 
-*Stunning desktop interface with animated gradients and trending movies grid*
+### Mobile Experience
+<div align="center">
+<img src="https://cdn.discordapp.com/attachments/719272441599492180/1384958543651934269/MobileMovieFinder.gif" alt="Mobile MovieFinder Demo" width="300">
+</div>
 
-### 📱 Mobile Experience  
-[![Mobile Demo](https://imgur.com/a/mobile-view-2ilRD3h)](https://imgur.com/a/mobile-view-2ilRD3h)
+*Seamlessly optimized mobile experience with responsive design and smooth animations*
 
-*Perfectly optimized mobile experience with responsive design - Click to view interactive demo*
-
-> **💡 Tip**: Click the images above to view the full gallery and mobile video demonstration!
+> 📱 **Mobile Demo**: The GIF above showcases the full mobile experience with fluid touch interactions and responsive layout
 
 ---
 
 ## 🎯 How It Works
 
-1. **Search**: Enter any movie or TV show name in the search bar
-2. **Discover**: Browse through trending movies with beautiful poster displays
-3. **Stream**: Click "Watch Now" for instant access to streaming platforms
-4. **Enjoy**: Experience seamless movie discovery and streaming
+1. **🔍 Search**: Enter a movie or TV show name in the sleek search bar
+2. **🔥 Discover**: Browse trending movies with stunning poster displays
+3. **🚀 Stream**: Click "Watch Now" for instant streaming access
+4. **🎬 Enjoy**: Relish a fluid, visually captivating experience
 
 ---
 
 ## 🔧 Configuration
 
 ### API Integration
-The project uses The Movie Database (TMDB) API for fetching movie data. The API key is included for demonstration purposes.
+MovieFinder leverages the TMDB API for movie data and high-quality posters. The API key is included for demonstration.
 
 ```javascript
 const TMDB_API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c';
@@ -115,111 +116,119 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 ```
 
 ### Streaming Platforms
-Currently integrated platforms:
-- **FlixBaba** - Primary streaming source
-- **2Flix** - Alternative streaming option
-- **FMovies** - Popular movie platform
-- **Soap2Day** - TV shows and movies
+Supported platforms:
+
+- **FlixBaba**: Primary streaming source
+- **2Flix**: Alternative streaming option
+- **FMovies**: Popular movie platform
+- **Soap2Day**: Movies and TV shows
+
+> **Note**: Ensure streaming platform URLs are accessible in your region.
 
 ---
 
 ## 🌟 Key Highlights
 
-- **⚡ Lightning Fast**: Optimized for speed with minimal dependencies
-- **📱 Mobile First**: Perfect experience across all devices
-- **🎨 Visual Excellence**: Stunning animations and modern design that captivates users
-- **🔒 Privacy Focused**: No user data collection or tracking
-- **🌍 Global Access**: Works worldwide with multiple streaming sources
+- **⚡ Blazing Fast**: Loads in under 2 seconds
+- **📱 Mobile Optimized**: 95/100 mobile score (see GIF demo)
+- **🎨 Visual Mastery**: Gradients, aurora effects, and glassmorphism
+- **🔒 Privacy First**: No data collection or tracking
+- **🌍 Global Reach**: Multi-platform streaming support
 
 ---
 
 ## 📈 Performance
 
-- **Load Time**: < 2 seconds
-- **Bundle Size**: < 900 lines of code
-- **Mobile Score**: 95/100
-- **Accessibility**: WCAG 2.1 compliant
-- **Cross-Platform**: Flawless experience on desktop and mobile
+| Metric | Score |
+|--------|-------|
+| **Load Time** | < 2 seconds |
+| **Bundle Size** | ~850 lines of code |
+| **Mobile Score** | 95/100 |
+| **Accessibility** | WCAG 2.1 compliant |
+| **Cross-Platform** | Flawless on desktop and mobile |
 
 ---
 
 ## 🎨 Design Philosophy
 
-MovieFinder was built with a focus on **visual impact** and **user experience**:
+MovieFinder is crafted for visual impact and user delight:
 
-- **Animated Gradients**: Dynamic background that shifts through purple, blue, and cosmic colors
-- **Aurora Effects**: Subtle floating light animations in the header
-- **Glassmorphism**: Modern frosted glass effects with backdrop blur
-- **Perfect Typography**: Carefully chosen fonts and spacing for readability
-- **Color Harmony**: Professional purple/violet theme that's easy on the eyes
+- **🌈 Dynamic Gradients**: Cosmic purple/violet hues that shift subtly
+- **✨ Aurora Animations**: Floating light effects in the header
+- **🔮 Glassmorphism**: Frosted glass with backdrop blur
+- **📝 Typography**: Clean, readable fonts with optimal spacing
+- **🎨 Color Palette**: Harmonious, eye-friendly design
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
+Contributions are welcome! Follow these steps:
 
 1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
+2. **Create** a feature branch (`git checkout -b feature/new-feature`)
+3. **Commit** changes (`git commit -m 'Add new feature'`)
+4. **Push** to the branch (`git push origin feature/new-feature`)
 5. **Open** a Pull Request
 
-### Development Guidelines
-- Maintain the existing code style and visual consistency
-- Test across multiple browsers and devices
-- Ensure mobile responsiveness
-- Keep the bundle size minimal
+### Guidelines
+- Preserve code style and visual consistency
+- Test across browsers and devices
+- Maintain mobile responsiveness (reference mobile GIF)
+- Keep the code size under ~1000 lines
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Licensed under the MIT License.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **The Movie Database (TMDB)** for providing comprehensive movie data and poster images
-- **GitHub Pages** for reliable hosting
-- **Streaming Platforms** for content accessibility
-- **Open Source Community** for inspiration and support
+- **🎬 The Movie Database (TMDB)**: For comprehensive movie data and posters
+- **🌐 GitHub Pages**: For fast, reliable hosting
+- **📺 Streaming Platforms**: For content accessibility
+- **💻 Open Source Community**: For inspiration and support
 
 ---
 
 ## 📞 Contact & Support
 
-**Created with ❤️ by Idyllize**
+<div align="center">
 
-- **Website**: [https://idyllize.github.io/MovieFinder/](https://idyllize.github.io/MovieFinder/)
-- **GitHub**: [@idyllize](https://github.com/idyllize)
-- **Issues**: [Report a Bug](https://github.com/idyllize/MovieFinder/issues)
+**Crafted with ❤️ by [Idyllize](https://github.com/idyllize)**
+
+[![Website](https://img.shields.io/badge/Website-MovieFinder-6366f1?style=for-the-badge&logo=vercel)](https://idyllize.github.io/MovieFinder/)
+[![GitHub](https://img.shields.io/badge/GitHub-@idyllize-181717?style=for-the-badge&logo=github)](https://github.com/idyllize)
+[![Issues](https://img.shields.io/badge/Issues-Report%20Bug-red?style=for-the-badge&logo=github)](https://github.com/idyllize/MovieFinder/issues)
+
+</div>
 
 ---
 
 ## 🏆 Showcase
 
 MovieFinder demonstrates:
-- **Modern Web Development** best practices
-- **Responsive Design** that works flawlessly across devices
-- **API Integration** with real-time data fetching
-- **Performance Optimization** with minimal code footprint
-- **Visual Design Excellence** that captivates users
+
+- **🚀 Modern Web Development**: Clean, efficient code
+- **📱 Responsive Design**: Seamless across devices
+- **🔗 API Integration**: Real-time TMDB data
+- **⚡ Performance**: Lightweight and fast
+- **🎨 Visual Excellence**: Captivating modern design
 
 ---
 
 <div align="center">
 
-**⭐ Star this repository if you found it helpful!**
+**⭐ Star this repository if you love it!**
 
 [![GitHub stars](https://img.shields.io/github/stars/idyllize/MovieFinder?style=social)](https://github.com/idyllize/MovieFinder/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/idyllize/MovieFinder?style=social)](https://github.com/idyllize/MovieFinder/network)
+[![GitHub forks](https://img.shields.io/github/forks/idyllize/MovieFinder?style=social)](https://github.com/idyllize/MovieFinder/network/members)
 
-**🎬 [Experience MovieFinder Live](https://idyllize.github.io/MovieFinder/) 🎬**
+## 🎬 [Discover Movies Now](https://idyllize.github.io/MovieFinder/) 🎬
+
+*Last updated: June 18, 2025*
 
 </div>
-
----
-
-*Last updated: June 2025*
