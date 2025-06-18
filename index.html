@@ -3,607 +3,718 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movie Search Engine</title>
+<title>MovieFinder by Idyllize</title>
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-    }
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    .header {
-        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        color: white;
-        padding: 40px 30px;
-        text-align: center;
-    }
-    .header h1 {
-        font-size: 2.5em;
-        margin-bottom: 15px;
-    }
-    .search-section {
-        padding: 30px;
-    }
-    .search-container {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 30px;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .search-input {
-        flex: 1;
-        padding: 15px;
-        border: 2px solid #e1e8ed;
-        border-radius: 10px;
-        font-size: 16px;
-    }
-    .search-btn {
-        padding: 15px 30px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-    }
-    .search-btn:hover {
-        transform: translateY(-2px);
-    }
-    .tmdb-search-btn {
-        padding: 15px 30px;
-        background: linear-gradient(45deg, #01b4e4, #90cea1);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-    }
-    .loading {
-        text-align: center;
-        padding: 20px;
-        display: none;
-    }
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #667eea;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 10px;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    .results {
-        margin-top: 20px;
-    }
-    .site-results {
-        margin-bottom: 30px;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .site-header {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        padding: 20px;
-        font-weight: bold;
-        font-size: 1.2em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .movie-item {
-        padding: 20px;
-        border-bottom: 1px solid #f1f3f4;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 20px;
-        align-items: center;
-        background: white;
-    }
-    .movie-item:hover {
-        background: #f8f9fa;
-    }
-    .movie-poster {
-        width: 60px;
-        height: 90px;
-        border-radius: 8px;
-        object-fit: cover;
-        background: #e9ecef;
-    }
-    .movie-info {
-        flex: 1;
-    }
-    .movie-title {
-        font-size: 1.3em;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 8px;
-    }
-    .movie-overview {
-        color: #666;
-        font-size: 0.9em;
-        margin-bottom: 8px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .movie-meta {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    .meta-badge {
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8em;
-        font-weight: bold;
-    }
-    .year-badge { background: #6c757d; color: white; }
-    .type-badge { background: #17a2b8; color: white; }
-    .rating-badge { background: #ffc107; color: #000; }
-    .id-badge { background: #28a745; color: white; }
-    .watch-btn {
-        background: #667eea;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        font-weight: bold;
-        white-space: nowrap;
-    }
-    .watch-btn:hover {
-        background: #5a6fd8;
-    }
-    .debug-section {
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 20px 0;
-        display: none;
-    }
-    .debug-content {
-        max-height: 300px;
-        overflow-y: auto;
-        background: #fff;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-family: monospace;
-        font-size: 12px;
-        white-space: pre-wrap;
-    }
-    .debug-btn {
-        padding: 8px 16px;
-        background: #6c757d;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 12px;
-        margin: 10px 0;
-    }
-    .error-message {
-        background: #ffe6e6;
-        border: 1px solid #ffcccc;
-        color: #cc0000;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 10px 0;
-    }
-    .success-message {
-        background: #e6ffe6;
-        border: 1px solid #ccffcc;
-        color: #006600;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 10px 0;
-    }
-    .no-results {
-        text-align: center;
-        padding: 40px;
-        color: #666;
-        display: none;
-    }
-    .site-links {
-        margin-top: 30px;
-        padding: 25px;
-        background: #f8f9fa;
-        border-radius: 12px;
-    }
-    .site-link {
-        display: inline-block;
-        margin: 10px;
-        padding: 12px 24px;
-        background: #667eea;
-        color: white;
-        text-decoration: none;
-        border-radius: 25px;
-        font-weight: bold;
-    }
-    .site-link:hover {
-        background: #5a6fd8;
-        transform: translateY(-2px);
-    }
-    .manual-search {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        color: #856404;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    .popular-movies {
-        background: #e8f5e8;
-        border: 1px solid #c3e6c3;
-        color: #155724;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    .movie-links {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
-        margin-top: 15px;
-    }
-    .movie-link {
-        background: #28a745;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 8px;
-        text-decoration: none;
-        text-align: center;
-        font-weight: bold;
-        font-size: 0.9em;
-    }
-    .movie-link:hover {
-        background: #218838;
-        transform: translateY(-1px);
-    }
-    .tips {
-        background: #e3f2fd;
-        border: 1px solid #90caf9;
-        color: #0d47a1;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    .search-method {
-        background: #f0f8ff;
-        border: 1px solid #b3d9ff;
-        color: #0066cc;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+background: linear-gradient(135deg, #0c0c0c 0%, #1a0033 25%, #330066 50%, #4d0099 75%, #6600cc 100%);
+min-height: 100vh;
+padding: 20px;
+color: #333;
+animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+0%, 100% { background: linear-gradient(135deg, #0c0c0c 0%, #1a0033 25%, #330066 50%, #4d0099 75%, #6600cc 100%); }
+33% { background: linear-gradient(135deg, #001122 0%, #003366 25%, #0066cc 50%, #3399ff 75%, #66ccff 100%); }
+66% { background: linear-gradient(135deg, #1a0033 0%, #4d0099 25%, #8000ff 50%, #b366ff 75%, #e6ccff 100%); }
+}
+
+.container {
+max-width: 1400px;
+margin: 0 auto;
+background: rgba(255, 255, 255, 0.95);
+border-radius: 32px;
+box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+overflow: hidden;
+backdrop-filter: blur(30px);
+border: 1px solid rgba(255,255,255,0.1);
+}
+
+.header {
+background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #e879f9 100%);
+color: white;
+padding: 4rem 2rem;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.header::before {
+content: '';
+position: absolute;
+top: -100%;
+left: -100%;
+width: 300%;
+height: 300%;
+background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+animation: aurora 12s ease-in-out infinite;
+}
+
+@keyframes aurora {
+0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+33% { transform: translateY(-30px) rotate(120deg) scale(1.1); }
+66% { transform: translateY(20px) rotate(240deg) scale(0.9); }
+}
+
+.header h1 {
+font-size: clamp(3rem, 8vw, 5rem);
+margin-bottom: 1rem;
+text-shadow: 0 8px 16px rgba(0,0,0,0.3), 0 0 40px rgba(255,255,255,0.2);
+position: relative;
+z-index: 1;
+font-weight: 800;
+letter-spacing: -0.03em;
+color: white;
+}
+
+.header p {
+font-size: clamp(1.2rem, 4vw, 1.6rem);
+opacity: 0.95;
+position: relative;
+z-index: 1;
+font-weight: 400;
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.brand-footer {
+font-size: 1.1rem;
+margin-top: 1rem;
+opacity: 0.9;
+position: relative;
+z-index: 1;
+font-weight: 300;
+}
+
+.search-section {
+padding: 3rem 2rem;
+}
+
+.search-container {
+display: flex;
+gap: 20px;
+margin-bottom: 3rem;
+max-width: 800px;
+margin-left: auto;
+margin-right: auto;
+flex-wrap: wrap;
+}
+
+.search-input {
+flex: 1;
+min-width: 300px;
+padding: 1.5rem 2rem;
+border: 3px solid transparent;
+border-radius: 20px;
+font-size: 18px;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7) border-box;
+font-weight: 500;
+box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+}
+
+.search-input:focus {
+outline: none;
+box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2), 0 16px 40px rgba(99, 102, 241, 0.3);
+transform: translateY(-4px);
+}
+
+.search-btn {
+padding: 1.5rem 2.5rem;
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+color: white;
+border: none;
+border-radius: 20px;
+cursor: pointer;
+font-size: 18px;
+font-weight: 700;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+white-space: nowrap;
+min-width: 160px;
+box-shadow: 0 12px 24px rgba(99, 102, 241, 0.4);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.search-btn:hover {
+transform: translateY(-4px) scale(1.02);
+box-shadow: 0 20px 40px rgba(99, 102, 241, 0.5);
+}
+
+.trending-section {
+background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 50%, #e9d5ff 100%);
+border-radius: 24px;
+padding: 2.5rem;
+margin-bottom: 3rem;
+border: 2px solid rgba(168, 85, 247, 0.2);
+box-shadow: 0 16px 32px rgba(168, 85, 247, 0.1);
+}
+
+.trending-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 2rem;
+}
+
+.trending-header h4 {
+font-size: 1.8rem;
+font-weight: 800;
+color: #581c87;
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.refresh-btn {
+background: linear-gradient(135deg, #a855f7, #8b5cf6);
+color: white;
+border: none;
+padding: 0.8rem 1.5rem;
+border-radius: 16px;
+font-size: 1rem;
+cursor: pointer;
+transition: all 0.3s ease;
+font-weight: 600;
+box-shadow: 0 6px 12px rgba(168, 85, 247, 0.3);
+}
+
+.refresh-btn:hover {
+transform: scale(1.05) translateY(-2px);
+box-shadow: 0 8px 16px rgba(168, 85, 247, 0.4);
+}
+
+.movie-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 1.5rem;
+}
+
+.movie-link {
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+color: white;
+padding: 0;
+border-radius: 20px;
+text-decoration: none;
+text-align: center;
+font-weight: 600;
+font-size: 1rem;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+display: flex;
+flex-direction: column;
+position: relative;
+overflow: hidden;
+box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.movie-link::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+
+.movie-link:hover::before {
+opacity: 1;
+}
+
+.movie-link:hover {
+transform: translateY(-8px) scale(1.02);
+box-shadow: 0 16px 40px rgba(99, 102, 241, 0.4);
+}
+
+.movie-poster-trending {
+width: 100%;
+height: 280px;
+object-fit: cover;
+border-radius: 20px 20px 0 0;
+background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+}
+
+.movie-info-trending {
+padding: 1.5rem;
+display: flex;
+flex-direction: column;
+gap: 0.8rem;
+flex-grow: 1;
+}
+
+.movie-title {
+font-weight: 800;
+font-size: 1.1rem;
+line-height: 1.3;
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.movie-year {
+font-size: 0.9rem;
+opacity: 0.9;
+}
+
+.movie-rating {
+font-size: 0.9rem;
+background: rgba(255,255,255,0.25);
+padding: 0.4rem 0.8rem;
+border-radius: 16px;
+align-self: center;
+font-weight: 700;
+backdrop-filter: blur(10px);
+}
+
+.trending-loading, .trending-error {
+text-align: center;
+padding: 2rem;
+color: #581c87;
+font-weight: 600;
+background: rgba(168, 85, 247, 0.1);
+border-radius: 16px;
+border: 2px dashed rgba(168, 85, 247, 0.3);
+}
+
+.loading {
+text-align: center;
+padding: 4rem;
+display: none;
+}
+
+.spinner {
+width: 80px;
+height: 80px;
+border: 6px solid rgba(99, 102, 241, 0.2);
+border-top: 6px solid #6366f1;
+border-radius: 50%;
+animation: spin 1s linear infinite;
+margin: 0 auto 2rem;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.site-results {
+margin-bottom: 2rem;
+border-radius: 24px;
+overflow: hidden;
+box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+background: white;
+border: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+.site-header {
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+color: white;
+padding: 2.5rem;
+font-weight: 800;
+font-size: 1.4rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.movie-item {
+padding: 2.5rem;
+border-bottom: 2px solid #f8fafc;
+display: grid;
+grid-template-columns: auto 1fr auto;
+gap: 2rem;
+align-items: center;
+transition: all 0.4s ease;
+}
+
+.movie-item:hover {
+background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+transform: translateX(12px);
+}
+
+.movie-poster {
+width: 80px;
+height: 120px;
+border-radius: 16px;
+object-fit: cover;
+background: #e5e7eb;
+transition: transform 0.4s ease;
+box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.movie-title-result {
+font-size: 1.5rem;
+font-weight: 800;
+color: #1f2937;
+margin-bottom: 0.8rem;
+line-height: 1.4;
+}
+
+.movie-overview {
+color: #6b7280;
+font-size: 1.1rem;
+margin-bottom: 1.2rem;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+line-height: 1.6;
+}
+
+.movie-meta {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+}
+
+.meta-badge {
+padding: 0.5rem 1.2rem;
+border-radius: 16px;
+font-size: 0.9rem;
+font-weight: 700;
+white-space: nowrap;
+}
+
+.year-badge { background: #6b7280; color: white; }
+.type-badge { background: #0ea5e9; color: white; }
+.rating-badge { background: #f59e0b; color: white; }
+.id-badge { background: #10b981; color: white; }
+
+.watch-btn {
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+color: white;
+padding: 1.2rem 2.5rem;
+border-radius: 20px;
+text-decoration: none;
+font-weight: 700;
+transition: all 0.4s ease;
+text-align: center;
+min-width: 160px;
+box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.watch-btn:hover {
+transform: translateY(-4px) scale(1.02);
+box-shadow: 0 12px 24px rgba(99, 102, 241, 0.4);
+}
+
+.site-links {
+margin-top: 3rem;
+padding: 3rem;
+background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+border-radius: 24px;
+text-align: center;
+border: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+.site-links h4 {
+margin-bottom: 2.5rem;
+color: #1f2937;
+font-size: 1.6rem;
+font-weight: 800;
+}
+
+.site-link {
+display: inline-block;
+margin: 1rem;
+padding: 1.5rem 2.5rem;
+background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+color: white;
+text-decoration: none;
+border-radius: 20px;
+font-weight: 700;
+transition: all 0.4s ease;
+box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+}
+
+.site-link:hover {
+transform: translateY(-4px) scale(1.02);
+box-shadow: 0 16px 32px rgba(99, 102, 241, 0.4);
+}
+
+.message {
+padding: 2rem;
+border-radius: 20px;
+margin: 2rem 0;
+font-weight: 600;
+border: 2px solid;
+}
+
+.error-message {
+background: linear-gradient(135deg, #fef2f2, #fee2e2);
+border-color: #fca5a5;
+color: #dc2626;
+}
+
+.success-message {
+background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+border-color: #86efac;
+color: #16a34a;
+}
+
+.no-results {
+text-align: center;
+padding: 5rem;
+color: #6b7280;
+display: none;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+body { padding: 10px; }
+.container { border-radius: 24px; }
+.header { padding: 3rem 1.5rem; }
+.search-section { padding: 2rem 1.5rem; }
+.search-container { flex-direction: column; gap: 1rem; }
+.search-input { min-width: unset; width: 100%; }
+.search-btn { width: 100%; }
+.trending-section { padding: 2rem; }
+.movie-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.movie-item { grid-template-columns: auto 1fr; gap: 1rem; }
+.watch-btn { grid-column: 1 / -1; margin-top: 1rem; }
+.site-link { display: block; margin: 0.5rem 0; width: 100%; }
+}
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1>🎬 Movie Search Engine</h1>
-        <p>Your gateway to streaming movies and TV shows</p>
+<div class="header">
+    <h1>🎬 MovieFinder</h1>
+    <p>Discover & Stream Movies and TV Shows</p>
+    <div class="brand-footer">by Idyllize • Made with Love ❤️</div>
+</div>
+
+<div class="search-section">
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search movies & TV shows..." id="movieInput" value="Avengers">
+        <button class="search-btn" onclick="searchMovies()">🔍 Search</button>
+    </div>
+
+    <div class="trending-section">
+        <div class="trending-header">
+            <h4>🔥 Trending Movies</h4>
+            <button class="refresh-btn" onclick="fetchTrendingMovies()" title="Refresh trending movies">
+                🔄 Refresh
+            </button>
+        </div>
+        <div class="movie-grid" id="trendingGrid">
+            <div class="trending-loading">Loading trending movies...</div>
+        </div>
     </div>
     
-    <div class="search-section">
-        <div class="search-method">
-            <h4>🔍 Working Search Method</h4>
-            <p>Using TMDB API to find movies, then generating FlixBaba links with proper IDs and slugs!</p>
-        </div>
-
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Enter movie or TV show name..." id="movieInput" value="Top Gun">
-            <button class="tmdb-search-btn" onclick="searchMoviesWithTMDB()">🎬 Search Movies</button>
-        </div>
-
-        <div class="manual-search">
-            <h4>🔍 Manual Search (Backup)</h4>
-            <p>Direct search on streaming sites:</p>
-            <div class="movie-links">
-                <a href="https://flixbaba.net/search?q=" target="_blank" class="movie-link" onclick="openSearch('flixbaba')">
-                    Search FlixBaba
-                </a>
-                <a href="https://2flix.to/search/" target="_blank" class="movie-link" onclick="openSearch('2flix')">
-                    Search 2Flix
-                </a>
-                <a href="https://fmovies.to/search/" target="_blank" class="movie-link">
-                    Search FMovies
-                </a>
-                <a href="https://soap2day.ac/search/" target="_blank" class="movie-link">
-                    Search Soap2Day
-                </a>
-            </div>
-        </div>
-
-        <div class="popular-movies">
-            <h4>🎬 Popular Movies - Direct Links</h4>
-            <p>Click to watch popular movies directly:</p>
-            <div class="movie-links">
-                <a href="https://flixbaba.net/movie/361743/top-gun-maverick" target="_blank" class="movie-link">
-                    Top Gun: Maverick
-                </a>
-                <a href="https://flixbaba.net/movie/76341/mad-max-fury-road" target="_blank" class="movie-link">
-                    Mad Max: Fury Road
-                </a>
-                <a href="https://flixbaba.net/movie/298618/the-flash" target="_blank" class="movie-link">
-                    The Flash
-                </a>
-                <a href="https://flixbaba.net/movie/447365/guardians-of-the-galaxy-volume-3" target="_blank" class="movie-link">
-                    Guardians Galaxy 3
-                </a>
-                <a href="https://flixbaba.net/movie/238/the-godfather" target="_blank" class="movie-link">
-                    The Godfather
-                </a>
-                <a href="https://flixbaba.net/movie/155/the-dark-knight" target="_blank" class="movie-link">
-                    The Dark Knight
-                </a>
-                <a href="https://flixbaba.net/movie/13/forrest-gump" target="_blank" class="movie-link">
-                    Forrest Gump
-                </a>
-                <a href="https://flixbaba.net/movie/278/the-shawshank-redemption" target="_blank" class="movie-link">
-                    The Shawshank Redemption
-                </a>
-            </div>
-        </div>
-        
-        <button class="debug-btn" onclick="toggleDebug()">🔧 Show Debug</button>
-        
-        <div class="debug-section" id="debugSection">
-            <h4>Debug Information:</h4>
-            <div class="debug-content" id="debugContent"></div>
-        </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Searching for movies...</p>
-        </div>
-        
-        <div class="results" id="results"></div>
-        
-        <div class="no-results" id="noResults">
-            <h3>No movies found</h3>
-            <p>Try a different search term or use the manual search links above</p>
-        </div>
-
-        <div class="site-links">
-            <h4>🌐 Streaming Websites:</h4>
-            <a href="https://flixbaba.net/" target="_blank" class="site-link">
-                🎭 FlixBaba
-            </a>
-            <a href="https://2flix.to/" target="_blank" class="site-link">
-                🎬 2Flix
-            </a>
-            <a href="https://fmovies.to/" target="_blank" class="site-link">
-                📺 FMovies
-            </a>
-            <a href="https://soap2day.ac/" target="_blank" class="site-link">
-                🎪 Soap2Day
-            </a>
-        </div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Searching for movies...</p>
     </div>
+    
+    <div class="results" id="results"></div>
+    
+    <div class="no-results" id="noResults">
+        <h3>🔍 No Results Found</h3>
+        <p>Try a different search term or check out our trending movies above</p>
+    </div>
+
+    <div class="site-links">
+        <h4>🌐 Streaming Platforms</h4>
+        <a href="https://flixbaba.net/" target="_blank" class="site-link">🎭 FlixBaba</a>
+        <a href="https://2flix.to/" target="_blank" class="site-link">🎬 2Flix</a>
+        <a href="https://fmovies.to/" target="_blank" class="site-link">📺 FMovies</a>
+        <a href="https://soap2day.ac/" target="_blank" class="site-link">🎪 Soap2Day</a>
+    </div>
+</div>
 </div>
 
 <script>
-    let debugMode = false;
-    let debugInfo = '';
+const TMDB_API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c';
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
-    // TMDB API configuration (using a demo key - replace with your own)
-    const TMDB_API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c'; // Demo key
-    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-    const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+document.addEventListener('DOMContentLoaded', () => {
+fetchTrendingMovies();
+document.getElementById('movieInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') searchMovies();
+});
+});
 
-    function createSlug(title) {
-        return title
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
+function createSlug(title) {
+return title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+}
+
+function createMovieUrl(id, title) {
+return `https://flixbaba.net/movie/${id}/${createSlug(title)}`;
+}
+
+async function fetchTrendingMovies() {
+const trendingGrid = document.getElementById('trendingGrid');
+trendingGrid.innerHTML = '<div class="trending-loading">🔄 Fetching latest trending movies...</div>';
+
+try {
+    const response = await fetch(`${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}`);
+    
+    if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
     }
-
-    function createMovieUrl(id, title, baseUrl = 'https://flixbaba.net') {
-        const slug = createSlug(title);
-        return `${baseUrl}/movie/${id}/${slug}`;
+    
+    const data = await response.json();
+    const trendingMovies = data.results.slice(0, 12).map(movie => ({
+        id: movie.id,
+        title: movie.title,
+        year: movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A',
+        rating: movie.vote_average ? `${(movie.vote_average * 10).toFixed(0)}%` : '',
+        poster: movie.poster_path ? `${TMDB_IMAGE_BASE}${movie.poster_path}` : null,
+        slug: createSlug(movie.title)
+    }));
+    
+    if (trendingMovies.length > 0) {
+        displayTrendingMovies(trendingMovies);
+        console.log('✅ Successfully fetched trending movies from TMDB');
+    } else {
+        throw new Error('No trending movies found');
     }
+    
+} catch (error) {
+    console.warn('⚠️ Failed to fetch trending movies:', error.message);
+    trendingGrid.innerHTML = `
+        <div class="trending-error">
+            ⚠️ Unable to load trending movies: ${error.message}
+            <br><small>Please try again or use the search feature above</small>
+        </div>
+    `;
+}
+}
 
-    function addDebug(message) {
-        debugInfo += `[${new Date().toLocaleTimeString()}] ${message}\n`;
-        if (debugMode) {
-            document.getElementById('debugContent').textContent = debugInfo;
-            document.getElementById('debugContent').scrollTop = document.getElementById('debugContent').scrollHeight;
+function displayTrendingMovies(movies) {
+const trendingGrid = document.getElementById('trendingGrid');
+
+trendingGrid.innerHTML = movies.map(movie => `
+    <a href="${createMovieUrl(movie.id, movie.title)}" target="_blank" class="movie-link">
+        ${movie.poster ? 
+            `<img src="${movie.poster}" alt="${movie.title}" class="movie-poster-trending">` : 
+            `<div class="movie-poster-trending" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #e5e7eb, #d1d5db); color: #6b7280; font-size: 3rem;">🎬</div>`
         }
-        console.log(message);
-    }
+        <div class="movie-info-trending">
+            <div class="movie-title">${movie.title}</div>
+            <div class="movie-year">${movie.year}</div>
+            ${movie.rating ? `<div class="movie-rating">${movie.rating}</div>` : ''}
+        </div>
+    </a>
+`).join('');
+}
 
-    function toggleDebug() {
-        debugMode = !debugMode;
-        const debugSection = document.getElementById('debugSection');
-        debugSection.style.display = debugMode ? 'block' : 'none';
+async function searchMovies() {
+const searchTerm = document.getElementById('movieInput').value.trim();
+const loading = document.getElementById('loading');
+const results = document.getElementById('results');
+const noResults = document.getElementById('noResults');
+
+if (!searchTerm) {
+    results.innerHTML = `
+        <div class="message error-message">
+            <strong>❌ Please enter a movie or TV show name</strong>
+        </div>
+    `;
+    return;
+}
+
+results.innerHTML = '';
+noResults.style.display = 'none';
+loading.style.display = 'block';
+
+try {
+    const searchUrl = `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTerm)}`;
+    const response = await fetch(searchUrl);
+    
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+    const data = await response.json();
+    loading.style.display = 'none';
+
+    if (data.results && data.results.length > 0) {
+        const movies = data.results
+            .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+            .slice(0, 12)
+            .map(item => ({
+                id: item.id,
+                title: item.title || item.name,
+                url: createMovieUrl(item.id, item.title || item.name),
+                type: item.media_type === 'movie' ? 'Movie' : 'TV Show',
+                year: item.release_date || item.first_air_date 
+                    ? new Date(item.release_date || item.first_air_date).getFullYear() 
+                    : 'N/A',
+                rating: item.vote_average ? item.vote_average.toFixed(1) : 'N/A',
+                overview: item.overview || 'No description available',
+                poster: item.poster_path ? `${TMDB_IMAGE_BASE}${item.poster_path}` : 
+                    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA2MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHJ4PSI4IiBmaWxsPSIjZTllY2VmIi8+PC9zdmc+'
+            }));
+
+        displayResults(movies);
         
-        if (debugMode) {
-            document.getElementById('debugContent').textContent = debugInfo;
-        }
-    }
-
-    function openSearch(site) {
-        const searchTerm = document.getElementById('movieInput').value.trim() || 'Top Gun';
-        let url;
-        
-        switch(site) {
-            case 'flixbaba':
-                url = `https://flixbaba.net/search?q=${encodeURIComponent(searchTerm)}`;
-                break;
-            case '2flix':
-                url = `https://2flix.to/search/${encodeURIComponent(searchTerm)}`;
-                break;
-            default:
-                return;
-        }
-        
-        window.open(url, '_blank');
-        addDebug(`🔗 Opened manual search for "${searchTerm}" on ${site}`);
-    }
-
-    async function searchMoviesWithTMDB() {
-        const searchTerm = document.getElementById('movieInput').value.trim();
-        const loading = document.getElementById('loading');
-        const results = document.getElementById('results');
-        const noResults = document.getElementById('noResults');
-
-        if (!searchTerm) {
-            alert('Please enter a movie or TV show name');
-            return;
-        }
-
-        // Clear previous results
-        debugInfo = '';
-        results.innerHTML = '';
-        noResults.style.display = 'none';
-        loading.style.display = 'block';
-
-        addDebug(`🚀 Starting TMDB search for: "${searchTerm}"`);
-
-        try {
-            // Search TMDB for movies
-            const searchUrl = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTerm)}`;
-            addDebug(`🔍 TMDB URL: ${searchUrl}`);
-
-            const response = await fetch(searchUrl);
-            
-            if (!response.ok) {
-                throw new Error(`TMDB API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            addDebug(`✅ TMDB returned ${data.results.length} results`);
-
-            loading.style.display = 'none';
-
-            if (data.results && data.results.length > 0) {
-                // Convert TMDB results to FlixBaba format
-                const movies = data.results.slice(0, 10).map(movie => {
-                    const flixbabaUrl = createMovieUrl(movie.id, movie.title);
-                    addDebug(`📝 Converting: ${movie.title} (${movie.id}) -> ${flixbabaUrl}`);
-                    
-                    return {
-                        id: movie.id,
-                        title: movie.title,
-                        url: flixbabaUrl,
-                        type: 'Movie',
-                        year: movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A',
-                        rating: movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A',
-                        overview: movie.overview || 'No description available',
-                        poster: movie.poster_path ? `${TMDB_IMAGE_BASE}${movie.poster_path}` : null,
-                        source: 'FlixBaba (via TMDB)'
-                    };
-                });
-
-                displayResults(movies);
-                addDebug(`✅ Successfully converted ${movies.length} movies to FlixBaba links`);
-                
-                // Show success message
-                results.insertAdjacentHTML('afterbegin', `
-                    <div class="success-message">
-                        <strong>✅ Search Successful!</strong> Found ${movies.length} movies. 
-                        Each link uses the correct FlixBaba URL format with movie ID and slug.
-                    </div>
-                `);
-
-            } else {
-                noResults.style.display = 'block';
-                addDebug('❌ No movies found in TMDB');
-            }
-
-        } catch (error) {
-            loading.style.display = 'none';
-            noResults.style.display = 'block';
-            results.innerHTML = `
-                <div class="error-message">
-                    <strong>Search Failed:</strong> ${error.message}<br>
-                    <strong>Solution:</strong> Use the manual search buttons above.
-                </div>
-            `;
-            addDebug(`💥 TMDB search failed: ${error.message}`);
-        }
-    }
-
-    function displayResults(movies) {
-        const results = document.getElementById('results');
-        
-        const siteResultsDiv = document.createElement('div');
-        siteResultsDiv.className = 'site-results';
-        
-        const siteHeader = document.createElement('div');
-        siteHeader.className = 'site-header';
-        siteHeader.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span>🎬</span>
-                <span>FlixBaba Links (Generated from TMDB)</span>
+        results.insertAdjacentHTML('afterbegin', `
+            <div class="message success-message">
+                <strong>✅ Found ${movies.length} results!</strong> Click any "Watch Now" button to stream.
             </div>
-            <span>${movies.length} movies</span>
-        `;
-        
-        siteResultsDiv.appendChild(siteHeader);
-        
-        movies.forEach(movie => {
-            const movieDiv = document.createElement('div');
-            movieDiv.className = 'movie-item';
-            
-            movieDiv.innerHTML = `
-                <img src="${movie.poster || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA2MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRTlFQ0VGIi8+CjxwYXRoIGQ9Ik0yNSAzNUgzNVY0NUgyNVYzNVoiIGZpbGw9IiM2Qzc1N0QiLz4KPC9zdmc+'}" 
-                     alt="${movie.title}" class="movie-poster" 
-                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA2MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRTlFQ0VGIi8+CjxwYXRoIGQ9Ik0yNSAzNUgzNVY0NUgyNVYzNVoiIGZpbGw9IiM2Qzc1N0QiLz4KPC9zdmc+'">
-                <div class="movie-info">
-                    <div class="movie-title">${movie.title}</div>
-                    <div class="movie-overview">${movie.overview}</div>
-                    <div class="movie-meta">
-                        <span class="meta-badge type-badge">${movie.type}</span>
-                        <span class="meta-badge year-badge">${movie.year}</span>
-                        <span class="meta-badge rating-badge">⭐ ${movie.rating}</span>
-                        <span class="meta-badge id-badge">ID: ${movie.id}</span>
-                    </div>
-                    <div style="font-size: 0.75em; color: #888; margin-top: 8px; word-break: break-all;">
-                        🔗 ${movie.url}
-                    </div>
-                </div>
-                <a href="${movie.url}" target="_blank" class="watch-btn">Watch on FlixBaba</a>
-            `;
-            
-            siteResultsDiv.appendChild(movieDiv);
-        });
-        
-        results.appendChild(siteResultsDiv);
+        `);
+    } else {
+        noResults.style.display = 'block';
     }
+} catch (error) {
+    loading.style.display = 'none';
+    results.innerHTML = `
+        <div class="message error-message">
+            <strong>❌ Search failed:</strong> ${error.message}<br>
+            Try the manual search links below or check trending movies above.
+        </div>
+    `;
+}
+}
 
-    // Allow Enter key to search
-    document.getElementById('movieInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchMoviesWithTMDB();
-        }
-    });
+function displayResults(movies) {
+const results = document.getElementById('results');
+const siteResultsDiv = document.createElement('div');
+siteResultsDiv.className = 'site-results';
 
-    // Initial message
-    addDebug('🎬 Movie Search Engine loaded');
-    addDebug('🔧 Using TMDB API to generate FlixBaba links');
-    addDebug('💡 Search will find movies and create proper FlixBaba URLs');
+siteResultsDiv.innerHTML = `
+    <div class="site-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>🎬</span>
+            <span>FlixBaba Streaming Links</span>
+        </div>
+        <span>${movies.length} results</span>
+    </div>
+`;
+
+movies.forEach(movie => {
+    const movieDiv = document.createElement('div');
+    movieDiv.className = 'movie-item';
+    
+    movieDiv.innerHTML = `
+        <img src="${movie.poster}" alt="${movie.title} poster" class="movie-poster">
+        <div class="movie-info">
+            <div class="movie-title-result">${movie.title}</div>
+            <div class="movie-overview">${movie.overview}</div>
+            <div class="movie-meta">
+                <span class="meta-badge year-badge">${movie.year}</span>
+                <span class="meta-badge type-badge">${movie.type}</span>
+                <span class="meta-badge rating-badge">${movie.rating}/10</span>
+                <span class="meta-badge id-badge">ID: ${movie.id}</span>
+            </div>
+        </div>
+        <a href="${movie.url}" target="_blank" class="watch-btn">Watch Now</a>
+    `;
+    
+    siteResultsDiv.appendChild(movieDiv);
+});
+
+results.appendChild(siteResultsDiv);
+}
 </script>
 </body>
 </html>
