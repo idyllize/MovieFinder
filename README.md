@@ -79,15 +79,19 @@ npx http-server
 
 ---
 
-## 📱 Screenshots
+## 📱 Screenshots & Demo
 
-### Desktop Experience
-![Desktop View](https://i.imgur.com/6XcRqsM.png)
+### 🖥️ Desktop Experience
+[![Desktop View](https://imgur.com/a/desktop-view-6XcRqsM)](https://imgur.com/a/desktop-view-6XcRqsM)
+
 *Stunning desktop interface with animated gradients and trending movies grid*
 
-### Mobile Experience
-![Mobile View](https://i.imgur.com/J8p9u1q.png)
-*Perfectly optimized mobile experience with responsive design*
+### 📱 Mobile Experience  
+[![Mobile Demo](https://imgur.com/a/mobile-view-2ilRD3h)](https://imgur.com/a/mobile-view-2ilRD3h)
+
+*Perfectly optimized mobile experience with responsive design - Click to view interactive demo*
+
+> **💡 Tip**: Click the images above to view the full gallery and mobile video demonstration!
 
 ---
 
