@@ -59,6 +59,52 @@
             align-items: center;
             z-index: 10;
         }
+        /* Modal Styles */
+        #playerModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #modalContent {
+            background: #1a1a2e;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+        }
+        #closeModal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: red;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        #fallbackButton {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: indigo;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        #playerFrame {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
         @media (max-width: 640px) {
             .movie-card img {
                 height: 60vw;
@@ -75,6 +121,9 @@
             .header-group, .button-group {
                 flex-wrap: wrap;
                 gap: 0.5rem;
+            }
+            #playerFrame {
+                height: 300px;
             }
         }
     </style>
@@ -172,31 +221,70 @@
         </section>
     </main>
 
+    <!-- Player Modal -->
+    <div id="playerModal" class="hidden" style="display: none;">
+        <div id="modalContent" class="glass">
+            <button id="closeModal" class="btn">Close</button>
+            <button id="fallbackButton" class="btn">Open in New Tab</button>
+            <iframe id="playerFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            <p id="modalError" class="text-red-400 hidden">Error loading player - Try the fallback button.</p>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
         const API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c';
         const BASE_URL = 'https://api.themoviedb.org/3';
         const IMG_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
+        // Ensure modal is hidden on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('playerModal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        });
+
         // Create slug for movie URL
         function createSlug(title) {
             return title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
         }
 
-        // Create FlixBaba movie URL
+        // Create FlixBaba movie watch URL
         function createMovieUrl(id, title) {
-            return `https://flixbaba.net/movie/${id}/${createSlug(title)}`;
+            return `https://flixbaba.net/movie/${id}/${createSlug(title)}/watch`;
         }
+
+        // Play movie in modal by loading the watch page directly in iframe
+        function playMovie(id, title) {
+            const url = createMovieUrl(id, title);
+            const modal = document.getElementById('playerModal');
+            const playerFrame = document.getElementById('playerFrame');
+            const modalError = document.getElementById('modalError');
+            const fallbackButton = document.getElementById('fallbackButton');
+            playerFrame.src = url;
+            modalError.classList.add('hidden');
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+
+            // Fallback: Open in new tab if iframe fails to load (e.g., after 10s timeout or error event)
+            playerFrame.onerror = () => {
+                modalError.classList.remove('hidden');
+            };
+            fallbackButton.onclick = () => window.open(url, '_blank');
+        }
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', () => {
+            const modal = document.getElementById('playerModal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.getElementById('playerFrame').src = '';
+        });
 
         // Fetch trending movies
         async function loadTrendingMovies() {
             const trendingContainer = document.getElementById('trendingMovies');
-            const homeButton = document.getElementById('homeButton');
-            const homeButtonNoResults = document.getElementById('homeButtonNoResults');
             trendingContainer.innerHTML = '<p class="text-center col-span-full fade-in text-gray-400">Loading trending movies...</p>';
-            homeButton.classList.add('hidden');
-            homeButtonNoResults.classList.add('hidden');
-            console.log('Loading trending movies, hiding home buttons');
 
             try {
                 const response = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`);
@@ -209,15 +297,15 @@
                             <div class="p-5">
                                 <h3 class="text-xl font-semibold text-white">${movie.title}</h3>
                                 <p class="text-sm text-gray-400">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</p>
-                                <a href="${createMovieUrl(movie.id, movie.title)}" target="_blank" class="block mt-3 w-full py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700 btn glow text-center font-semibold">Play ▶</a>
+                                <button onclick="playMovie(${movie.id}, '${movie.title.replace(/'/g, "\\'")}')" class="block mt-3 w-full py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700 btn glow text-center font-semibold">Play ▶</button>
                             </div>
                         </div>
                     `;
                     trendingContainer.insertAdjacentHTML('beforeend', movieCard);
                 });
             } catch (error) {
-                trendingContainer.innerHTML = '<p class="text-center col-span-full text-red-400">Error loading movies</p>';
-                console.error('Error loading trending movies:', error);
+                trendingContainer.innerHTML = '<p class="text-center col-span-full text-red-400">Error loading movies: Check console for details.</p>';
+                console.error('Trending load error:', error);
             }
         }
 
@@ -241,7 +329,6 @@
                 trendingSection.classList.remove('hidden');
                 homeButton.classList.add('hidden');
                 homeButtonNoResults.classList.add('hidden');
-                console.log('Empty query, showing trending, hiding home buttons');
                 return;
             }
 
@@ -254,12 +341,10 @@
                     searchResults.classList.add('hidden');
                     noResults.classList.remove('hidden');
                     homeButtonNoResults.classList.remove('hidden');
-                    console.log('No results found, showing no-results section and home button');
                     return;
                 }
 
                 homeButton.classList.remove('hidden');
-                console.log('Search results found, showing search results and home button');
 
                 data.results.slice(0, 8).forEach(movie => {
                     const movieCard = `
@@ -268,17 +353,16 @@
                             <div class="p-5">
                                 <h3 class="text-xl font-semibold text-white">${movie.title}</h3>
                                 <p class="text-sm text-gray-400">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</p>
-                                <a href="${createMovieUrl(movie.id, movie.title)}" target="_blank" class="block mt-3 w-full py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700 btn glow text-center font-semibold">Play ▶</a>
+                                <button onclick="playMovie(${movie.id}, '${movie.title.replace(/'/g, "\\'")}')" class="block mt-3 w-full py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700 btn glow text-center font-semibold">Play ▶</button>
                             </div>
                         </div>
                     `;
                     searchResultsContainer.insertAdjacentHTML('beforeend', movieCard);
                 });
             } catch (error) {
-                searchResultsContainer.innerHTML = '<p class="text-center col-span-full text-red-400">Error searching movies</p>';
+                searchResultsContainer.innerHTML = '<p class="text-center col-span-full text-red-400">Error searching movies: Check console.</p>';
                 homeButton.classList.remove('hidden');
-                console.log('Search error, showing home button');
-                console.error('Error searching movies:', error);
+                console.error('Search error:', error);
             }
         }
 
@@ -292,7 +376,6 @@
             document.getElementById('trendingSection').classList.remove('hidden');
             homeButton.classList.add('hidden');
             homeButtonNoResults.classList.add('hidden');
-            console.log('Returning to trending view, hiding home buttons');
             loadTrendingMovies();
         }
 
